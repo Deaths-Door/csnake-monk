@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "config.h": "c",
+        "cstdio": "c",
+        "stdbool.h": "c",
+        "time.h": "c",
+        "math.h": "c",
+        "types.h": "c"
+    }
+}
