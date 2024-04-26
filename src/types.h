@@ -44,7 +44,7 @@ typedef struct board_cell** *const board_cell_array_pointer;
  *
  * This type represents a pointer to a pointer to an array of `player` structures, keeping track of all players in the game.
  */
-typedef struct player* *const players_array_pointer;
+typedef struct player* players_array_pointer;
 
 /**
  * @typedef ladders_array_pointer
@@ -59,8 +59,14 @@ typedef struct ladder* ladders_array_pointer;
  * @brief Enumeration representing the role of a point on the board (ladder or snake).
  */
 typedef enum role {
-  is_ladder,  /**< Point represents the bottom of a ladder. */
-  is_snake   /**< Point represents the head of a snake. */
+  /// @brief Point represents a ladder.
+  is_ladder, 
+  /// @brief Point represents a snake.
+  is_snake,
+  /// @brief Represents the head of the snake
+  is_snake_head,
+  /// @brief No Role
+  none,
 } role;
 
 /**
@@ -85,9 +91,14 @@ typedef struct player {
  */
 typedef struct board_cell {
   /**
-   * @brief The label associated with the board cell (typically its position number).
+   * @brief The label associated with the board cell (its position number).
    */
   unsigned int label;
+  
+  /**
+   * @brief The role associated with the point (ladder or snake), or unspecified (NULL) if not applicable.
+   */
+  role role;
 } board_cell;
 
 
@@ -107,11 +118,6 @@ typedef struct point {
    * @brief The Y-coordinate of the point on the board.
    */
   const unsigned int y;
-
-  /**
-   * @brief The role associated with the point (ladder or snake), or unspecified (NULL) if not applicable.
-   */
-  const enum role role;
 } point;
 
 /**
@@ -122,12 +128,12 @@ typedef struct ladder {
   /**
    * @brief The starting point (bottom) of the ladder.
    */
-  const struct point start;
+  const point start;
 
   /**
    * @brief The ending point (top) of the ladder.
    */
-  const struct point end;
+  const point end;
 } ladder;
 
 

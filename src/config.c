@@ -13,7 +13,7 @@ validate_message ensure_difficulty_within_1_10(validate_int input) {
 
 // Function Pointers https://www.geeksforgeeks.org/function-pointer-in-c/
 config receive_config_from_user() {
-    const unsigned int number_of_players = receive_input("Enter the difficulty level (1-10): \n",&ensure_players_within_1_10);
+    const unsigned int number_of_players = receive_input("Enter the number of players (1-10): \n",&ensure_players_within_1_10);
     const unsigned int difficulty = receive_input("Enter the difficulty level (1-10): \n",&ensure_difficulty_within_1_10);
 
     config config = {
