@@ -61,6 +61,8 @@ typedef struct ladder* ladders_array_pointer;
 typedef enum role {
   /// @brief Point represents a ladder.
   is_ladder, 
+  /// @brief Point represents the start of the ladder.
+  is_ladder_start, 
   /// @brief Point represents a snake.
   is_snake,
   /// @brief Represents the head of the snake
@@ -128,12 +130,12 @@ typedef struct ladder {
   /**
    * @brief The starting point (bottom) of the ladder.
    */
-  const point start;
+  point start;
 
   /**
    * @brief The ending point (top) of the ladder.
    */
-  const point end;
+  point end;
 } ladder;
 
 
@@ -175,7 +177,7 @@ typedef struct config {
   /**
    * @brief The number of players participating in the game.
    */
-  const unsigned int number_of_players;
+  unsigned int number_of_players;
 
   /**
    * @brief The difficulty level of the game (implementation-specific, could be integer or enum).

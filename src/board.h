@@ -22,6 +22,11 @@
  */
 board generate_board_from_config(config config);
 
+/**
+ * @brief Frees the memory allocated for the `board` structure and its elements.
+ */
+void free_board(board board);
+
 // Function prototypes for internal helper functions:
 
 /**

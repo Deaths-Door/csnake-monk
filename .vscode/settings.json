@@ -29,6 +29,21 @@
         "xstddef": "c",
         "xstring": "c",
         "xtr1common": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "board.h": "c",
+        "windows.h": "c",
+        "cstddef": "c",
+        "cstdlib": "c",
+        "cstring": "c",
+        "ctime": "c",
+        "cwchar": "c",
+        "initializer_list": "c",
+        "locale": "c",
+        "new": "c",
+        "streambuf": "c",
+        "system_error": "c",
+        "xlocinfo": "c",
+        "xlocmes": "c",
+        "xloctime": "c"
     }
 }

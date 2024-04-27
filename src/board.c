@@ -17,6 +17,18 @@ board generate_board_from_config(config config) {
     return board;
 }
 
+void free_board(board board) {
+    // Free memory
+    free(board.players);
+    free(board.ladders);
+
+    for (int i = 0; i < board.board_size; i++) {
+        free(board.inner_board[i]);
+    }
+
+    free(board.inner_board);
+}
+
 players_array_pointer _create_players(const unsigned int number_of_players) {
     // Allocate memory for the players array
     //    - `config.number_of_players * sizeof(struct player_data)`: This expression
@@ -34,8 +46,6 @@ players_array_pointer _create_players(const unsigned int number_of_players) {
     for(int i = 0;i < number_of_players;i++) {
         const struct player player = { 0, 0}; 
         players[i] = player;
-       // players[i].position_x = 0;
-       // players[i]->position_y = 0;
     }
 
     return players;
@@ -64,24 +74,22 @@ board_cell_array_pointer _create_labeled_board(const unsigned int board_size) {
                 .label = count,
                 .role = none
             };
-        
-            inner_board[i][j]  = cell;
 
+            inner_board[i][j] = cell;
             count += 1;
         }
-
     }
     
-    return inner_board;
+    return (board_cell_array_pointer) inner_board;
 }
 
 void _generate_snake_and_ladders(config config,board board) {
     // Calculate the number of entities on the grid
     const unsigned int adjusted_players_modifier = sqrt(config.number_of_players) * 10;
-    const unsigned int number_of_ladders = floor(config.difficulty * (board.board_size / 7.5)) - adjusted_players_modifier;
+    const unsigned int number_of_ladders = abs(floor(config.difficulty * (board.board_size / 7.5)) - adjusted_players_modifier);
 
     board.ladders = _genereate_ladders(board,number_of_ladders);
-
+    // TODO : Generate snakes but i dont know how
     const unsigned int number_of_snakes = floor(config.difficulty * (board.board_size / 10)) + adjusted_players_modifier;
 }
 
@@ -148,8 +156,8 @@ point point_for_length(const board board,const point start,const unsigned int le
 }
 
 bool all_neighbors_have_labels(const board board, const int start_x, const int start_y) {
-    return board.inner_board[start_x][start_y]->role != none
-        && board.inner_board[start_x + 1][start_y]->role != none &&
+    // TODO : Add boundary checking
+    return board.inner_board[start_x][start_y]->role != none && board.inner_board[start_x + 1][start_y]->role != none &&
             board.inner_board[start_x - 1][start_y]->role != none && board.inner_board[start_x][start_y - 1]->role != none &&
             board.inner_board[start_x][start_y + 1]->role != none;
 }
@@ -171,8 +179,11 @@ point _draw_line_on_board(board board,const point start,const point suggested_en
         // Do not place on ladder or the snake head
         // So either stop placing by breaking
         // Or set the role of this cell as ladder
-        if(board.inner_board[x0][y1]->role == is_ladder || board.inner_board[x0][y1]->role == is_snake_head) break;
-        else board.inner_board[x0][y0]->role = is_ladder; // Create ladder here
+        if(board.inner_board[x0][y1]->role == is_ladder 
+            || board.inner_board[x0][y1]->role == is_ladder_start 
+            || board.inner_board[x0][y1]->role == is_snake_head
+            ) break;
+        else board.inner_board[x0][y0]->role = is_ladder_start; // Create ladder here
 
         if(x0 == x1 && y0 == y1) break;
 
@@ -213,7 +224,7 @@ point _suggested_end_point_for(const board board,const point start,const unsigne
 }
 
 ladders_array_pointer _genereate_ladders(const board board,const unsigned int count) {
-    ladders_array_pointer ladders = malloc(count * sizeof(ladder));
+    ladder* ladders = malloc(count * sizeof(ladder));
     
     unsigned int minimum_start_y = 0;
     unsigned int maximum_length = (int)(board.board_size * 0.5);
@@ -223,7 +234,7 @@ ladders_array_pointer _genereate_ladders(const board board,const unsigned int co
     while(ladders_placed < count) {
         // board.board_size - 2 so that the ladder is not on the last column of the grid
         const unsigned int _start_x = _random_between(0,board.board_size - 2);
-        const unsigned int _start_y = _random_between(minimum_start_y,board.board_size);
+        const unsigned int _start_y = _random_between(minimum_start_y,board.board_size - 2);
 
         // This ensures that the ladder doesn't start over , or in the way of an other ladder
         if(!all_neighbors_have_labels(board,_start_x,_start_y)) {
@@ -240,12 +251,8 @@ ladders_array_pointer _genereate_ladders(const board board,const unsigned int co
         const point suggested_end = _suggested_end_point_for(board,start,calculated_length);
         const point end = _draw_line_on_board(board,start,suggested_end);
 
-        const ladder ladder = {
-            .start = start,
-            .end = end
-        };
-
-        //ladders[ladders_placed] = suggested_end;
+        ladders[ladders_placed].start = start; 
+        ladders[ladders_placed].end = end; 
 
         // Increase the minimum start_y on every 3rd iteration, and hence decrease the maximum length
         if(ladders_placed %3 == 0) {
