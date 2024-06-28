@@ -156,10 +156,36 @@ point point_for_length(const board board,const point start,const unsigned int le
 }
 
 bool all_neighbors_have_labels(const board board, const int start_x, const int start_y) {
-    // TODO : Add boundary checking
-    return board.inner_board[start_x][start_y]->role != none && board.inner_board[start_x + 1][start_y]->role != none &&
-            board.inner_board[start_x - 1][start_y]->role != none && board.inner_board[start_x][start_y - 1]->role != none &&
-            board.inner_board[start_x][start_y + 1]->role != none;
+    board.inner_board[start_x];
+    board.inner_board[start_x][start_y];
+    board.inner_board[start_x][start_y]->role;
+    board.inner_board[start_x][start_y]->role != none;
+
+    board.inner_board[start_x + 1];
+    board.inner_board[start_x + 1][start_y];
+    board.inner_board[start_x + 1][start_y]->role;
+    board.inner_board[start_x + 1][start_y]->role != none;
+
+    board.inner_board[start_x - 1];
+    board.inner_board[start_x - 1][start_y];
+    board.inner_board[start_x - 1][start_y]->role;
+    board.inner_board[start_x - 1][start_y]->role != none;
+
+
+    board.inner_board[start_x];
+    board.inner_board[start_x][start_y  + 1];
+    board.inner_board[start_x][start_y + 1]->role;
+    board.inner_board[start_x][start_y + 1]->role != none;
+
+
+    board.inner_board[start_x];
+    board.inner_board[start_x][start_y - 1];
+    board.inner_board[start_x][start_y - 1]->role;
+    board.inner_board[start_x][start_y - 1]->role != none;
+
+    return board.inner_board[start_x][start_y]->role != none && board.inner_board[start_x + 1][start_y]->role != none; //&&
+          //  board.inner_board[start_x - 1][start_y]->role != none && board.inner_board[start_x][start_y - 1]->role != none &&
+         //   board.inner_board[start_x][start_y + 1]->role != none;
 }
 
 point _draw_line_on_board(board board,const point start,const point suggested_end){
@@ -251,8 +277,13 @@ ladders_array_pointer _genereate_ladders(const board board,const unsigned int co
         const point suggested_end = _suggested_end_point_for(board,start,calculated_length);
         const point end = _draw_line_on_board(board,start,suggested_end);
 
-        ladders[ladders_placed].start = start; 
-        ladders[ladders_placed].end = end; 
+        const ladder new_ladder = {
+            .start = start,
+            .end = end
+        };
+    
+        // https://stackoverflow.com/a/77446759
+        memcpy(&ladders[ladders_placed],&new_ladder, sizeof(ladder));
 
         // Increase the minimum start_y on every 3rd iteration, and hence decrease the maximum length
         if(ladders_placed %3 == 0) {

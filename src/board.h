@@ -11,6 +11,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "types.h"
 #include "config.h"
